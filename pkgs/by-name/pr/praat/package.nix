@@ -7,18 +7,21 @@
   pkg-config,
   stdenv,
   wrapGAppsHook3,
+  libjack2,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "praat";
-  version = "6.4.48";
+  version = "6.4.60";
 
   src = fetchFromGitHub {
     owner = "praat";
     repo = "praat.github.io";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-OxogOY86SclLMv+Tp4skXIuz9RrWdNGY7oGhySJ9scI=";
+    hash = "sha256-4rDdYXgiAf3yQUGELdP5Y1Cmel/zF507L9CSTI6wQnM=";
   };
+
+  strictDeps = true;
 
   nativeBuildInputs = [
     pkg-config
@@ -29,6 +32,7 @@ stdenv.mkDerivation (finalAttrs: {
     alsa-lib
     gtk3
     libpulseaudio
+    libjack2
   ];
 
   makeFlags = [
@@ -38,7 +42,9 @@ stdenv.mkDerivation (finalAttrs: {
   configurePhase = ''
     runHook preConfigure
 
-    cp makefiles/makefile.defs.linux.pulse-gcc makefile.defs
+    cp makefiles/makefile.defs.linux.pulse-gcc.${
+      if stdenv.hostPlatform.isLittleEndian then "LE" else "BE"
+    } makefile.defs
 
     runHook postConfigure
   '';
