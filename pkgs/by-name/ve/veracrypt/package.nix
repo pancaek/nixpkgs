@@ -15,6 +15,7 @@
   btrfs-progs,
   pcsclite,
   wrapGAppsHook3,
+  imagemagick,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -59,7 +60,8 @@ stdenv.mkDerivation (finalAttrs: {
 
   installPhase = ''
     install -Dm 755 Main/veracrypt "$out/bin/veracrypt"
-    install -Dm 444 Resources/Icons/VeraCrypt-256x256.xpm "$out/share/pixmaps/veracrypt.xpm"
+    mkdir -p $out/share/icons/hicolor/256x256/apps
+    magick Resources/Icons/VeraCrypt-256x256.xpm $out/share/icons/256x256/apps/veracrypt.png"
     install -Dm 444 License.txt -t "$out/share/doc/veracrypt/"
     install -d $out/share/applications
     substitute Setup/Linux/veracrypt.desktop $out/share/applications/veracrypt.desktop \
