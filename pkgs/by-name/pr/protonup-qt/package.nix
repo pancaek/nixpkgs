@@ -21,10 +21,9 @@ appimageTools.wrapAppImage rec {
 
   extraInstallCommands = ''
     install -Dm644 ${src}/net.davidotek.pupgui2.desktop $out/share/applications/protonup-qt.desktop
-    install -Dm644 ${src}/net.davidotek.pupgui2.png $out/share/pixmaps/protonup-qt.png
+    install -Dm644 ${src}/net.davidotek.pupgui2.png -t $out/share/icons/hicolor/256x256/apps
     substituteInPlace $out/share/applications/protonup-qt.desktop \
       --replace-fail "Exec=net.davidotek.pupgui2" "Exec=protonup-qt" \
-      --replace-fail "Icon=net.davidotek.pupgui2" "Icon=protonup-qt"
     wrapProgram $out/bin/protonup-qt \
       --unset QT_PLUGIN_PATH \
       --unset QML2_IMPORT_PATH
