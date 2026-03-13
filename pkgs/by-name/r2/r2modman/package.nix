@@ -52,6 +52,10 @@ stdenv.mkDerivation (finalAttrs: {
   buildPhase = ''
     runHook preBuild
 
+    # Hide update banner
+    rm src/components/banner/ManagerUpdateBanner.vue
+    echo "<template></template>" > src/components/banner/ManagerUpdateBanner.vue
+
     substituteInPlace node_modules/sass-embedded/dist/lib/src/compiler-path.js \
       --replace-fail 'compilerCommand = (() => {' 'compilerCommand = (() => { return ["${lib.getExe dart-sass}"];'
 
