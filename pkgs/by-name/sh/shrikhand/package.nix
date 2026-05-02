@@ -13,16 +13,9 @@ stdenvNoCC.mkDerivation {
     hash = "sha256-wHP1Bwu5Yw3a+RwDOHrmthsnuvwyCV4l6ma5EjA6EMA=";
   };
 
-  dontUnpack = true;
+sourceRoot = ".";
 
-  installPhase = ''
-    runHook preInstall
-
-    install -D -m644 $src $out/share/fonts/truetype/Shrikhand-Regular.ttf
-
-    runHook postInstall
-  '';
-
+unpackCmd= "cp $curSrc ."
   meta = {
     homepage = "https://jonpinhorn.github.io/shrikhand/";
     description = "Vibrant and playful typeface for both Latin and Gujarati writing systems";
