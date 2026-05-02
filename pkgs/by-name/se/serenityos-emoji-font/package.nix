@@ -6,6 +6,7 @@
   python3Packages,
   fetchpatch2,
   parallel,
+  installFonts,
 }:
 let
 
@@ -67,6 +68,7 @@ stdenvNoCC.mkDerivation {
   nativeBuildInputs = [
     pixart2svg
     parallel
+    installFonts
   ]
   ++ (with python3Packages; [
     imageio
@@ -88,15 +90,6 @@ stdenvNoCC.mkDerivation {
     nanoemoji --family "SerenityOS Emoji" --output_file "SerenityOS-Emoji.ttf" --color_format glyf_colr_1 svgfiles/*.svg
 
     runHook postBuild
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    mkdir -p $out/share/fonts/truetype
-    cp build/SerenityOS-Emoji.ttf $out/share/fonts/truetype
-
-    runHook postInstall
   '';
 
   meta = {
