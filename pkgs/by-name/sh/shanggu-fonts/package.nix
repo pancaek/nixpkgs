@@ -3,6 +3,7 @@
   stdenvNoCC,
   fetchurl,
   p7zip,
+  installFonts,
 }:
 let
   version = "1.028";
@@ -24,15 +25,15 @@ let
         Serif = "sha256-A1/KygN+OC1e3p8T6OAN8jCAi8HuswkE/xjo65GVweY=";
       };
 
-  extraOutputs = builtins.attrNames source;
 in
 stdenvNoCC.mkDerivation {
   pname = "shanggu-fonts";
   inherit version;
 
-  outputs = [ "out" ] ++ extraOutputs;
-
-  nativeBuildInputs = [ p7zip ];
+  nativeBuildInputs = [
+    p7zip
+    installFonts
+  ];
 
   unpackPhase = ''
     runHook preUnpack
@@ -44,21 +45,6 @@ stdenvNoCC.mkDerivation {
   )
   + ''
     runHook postUnpack
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    mkdir -p $out/share/fonts/truetype
-  ''
-  + lib.strings.concatLines (
-    lib.lists.forEach extraOutputs (name: ''
-      install -Dm444 ${name}/*.ttc -t ${placeholder name}/share/fonts/truetype
-      ln -s "${placeholder name}" /share/fonts/truetype/*.ttc $out/share/fonts/truetype
-    '')
-  )
-  + ''
-    runHook postInstall
   '';
 
   meta = {
