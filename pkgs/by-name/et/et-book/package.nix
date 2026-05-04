@@ -2,11 +2,17 @@
   lib,
   stdenvNoCC,
   fetchFromGitHub,
+  installFonts,
 }:
 
 stdenvNoCC.mkDerivation {
   pname = "et-book";
   version = "0-unstable-2015-10-05";
+
+  outputs = [
+    "out"
+    "webfont"
+  ];
 
   src = fetchFromGitHub {
     owner = "edwardtufte";
@@ -15,14 +21,7 @@ stdenvNoCC.mkDerivation {
     hash = "sha256-B6ryC9ibNop08TJC/w9LSHHwqV/81EezXsTUJFq8xpo=";
   };
 
-  installPhase = ''
-    runHook preInstall
-
-    mkdir -p $out/share/fonts/truetype
-    cp -t $out/share/fonts/truetype source/4-ttf/*.ttf
-
-    runHook postInstall
-  '';
+  nativeBuildInputs = [ installFonts ];
 
   meta = {
     description = "Typeface used in Edward Tufte’s books";
