@@ -2,6 +2,7 @@
   lib,
   stdenvNoCC,
   fetchFromGitHub,
+  installFonts,
 }:
 
 stdenvNoCC.mkDerivation {
@@ -15,11 +16,7 @@ stdenvNoCC.mkDerivation {
     hash = "sha256-b1moyTVy0hHGu9/LrQ9k6Isd/LYTSxiuqz3BzrYVbXY=";
   };
 
-  installPhase = ''
-    runHook preInstall
-    install -Dm444 fonts/ttf/*.ttf -t $out/share/fonts/truetype/
-    runHook postInstall
-  '';
+  nativeBuildInputs = [ installFonts ];
 
   meta = {
     homepage = "https://github.com/noriokanisawa/HachiMaruPop";
