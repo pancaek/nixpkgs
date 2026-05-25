@@ -3,12 +3,18 @@
   python312Packages,
   fetchFromGitHub,
   nix-update-script,
+  installFonts,
 }:
 
 python312Packages.buildPythonPackage rec {
   pname = "ark-pixel-font";
   version = "2025.08.24";
   pyproject = false;
+
+  outouts = [
+    "out"
+    "webfont"
+  ];
 
   src = fetchFromGitHub {
     owner = "TakWolf";
@@ -30,26 +36,14 @@ python312Packages.buildPythonPackage rec {
     cyclopts
   ];
 
+  nativeBuildInputs = [ installFonts ];
+
   buildPhase = ''
     runHook preBuild
 
     python -m tools.cli --cleanup
 
     runHook postBuild
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    install -Dm444 build/outputs/*.bdf -t $out/share/fonts/bdf
-    install -Dm444 build/outputs/*.otf -t $out/share/fonts/opentype
-    install -Dm444 build/outputs/*.ttf -t $out/share/fonts/truetype
-    install -Dm444 build/outputs/*.woff2 -t $out/share/fonts/woff2
-    install -Dm444 build/outputs/*.pcf -t $out/share/fonts/pcf
-    install -Dm444 build/outputs/*.otc -t $out/share/fonts/otc
-    install -Dm444 build/outputs/*.ttc -t $out/share/fonts/ttc
-
-    runHook postInstall
   '';
 
   passthru.updateScript = nix-update-script { };
