@@ -3,6 +3,7 @@
   stdenv,
   fetchurl,
   mkfontscale,
+  installFonts,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -14,7 +15,10 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-SsLzZdR5icVJNbr5rcCPbagPPtWghbqs2Jxmrtufsa4=";
   };
 
-  nativeBuildInputs = [ mkfontscale ];
+  nativeBuildInputs = [
+    mkfontscale
+    installFonts
+  ];
 
   dontConfigure = true;
   dontBuild = true;
@@ -29,14 +33,14 @@ stdenv.mkDerivation (finalAttrs: {
       gzip -n -9 -c "$f" > $out/share/fonts/misc/"$f".gz
     done
 
-    install -D -m 644 *.bdf -t "$out/share/fonts/misc"
-    install -D -m 644 *.ttf -t "$out/share/fonts/truetype"
-    install -D -m 644 Licence.txt -t "$out/share/doc/$name"
+    runHook postInstall
+  '';
 
+  postInstall = ''
+    install -D -m 644 Licence.txt -t "$out/share/doc/${finalAttrs.pname}"
     mkfontscale "$out/share/fonts/truetype"
     mkfontdir   "$out/share/fonts/misc"
 
-    runHook postInstall
   '';
 
   meta = {
