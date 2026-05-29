@@ -2,11 +2,17 @@
   lib,
   stdenvNoCC,
   fetchFromGitHub,
+  installFonts,
 }:
 
 stdenvNoCC.mkDerivation {
   pname = "lalezar-fonts";
   version = "unstable-2017-02-28";
+
+  outputs = [
+    "out"
+    "webfont"
+  ];
 
   src = fetchFromGitHub {
     owner = "BornaIz";
@@ -15,14 +21,7 @@ stdenvNoCC.mkDerivation {
     hash = "sha256-95z58ABTx53aREXRpj9xgclX9kuGiQiiKBwqwnF6f8g=";
   };
 
-  installPhase = ''
-    runHook preInstall
-
-    mkdir -p $out/share/fonts/lalezar-fonts
-    cp -v $( find . -name '*.ttf') $out/share/fonts/lalezar-fonts
-
-    runHook postInstall
-  '';
+  nativeBuildInputs = [ installFonts ];
 
   meta = {
     homepage = "https://github.com/BornaIz/Lalezar";
