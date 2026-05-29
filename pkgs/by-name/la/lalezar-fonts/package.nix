@@ -28,6 +28,6 @@ stdenvNoCC.mkDerivation {
     description = "Multi-script display typeface for popular culture";
     license = lib.licenses.ofl;
     platforms = lib.platforms.all;
-    maintainers = [ ];
+    maintainers = with lib.maintainers; [ pancaek ];
   };
 }
