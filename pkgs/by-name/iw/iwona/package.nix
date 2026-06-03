@@ -2,21 +2,15 @@
   lib,
   stdenvNoCC,
   texlive,
+  installFonts,
 }:
 
 stdenvNoCC.mkDerivation rec {
   inherit (src) pname version;
 
   src = texlive.pkgs.iwona;
-  dontUnpack = true;
 
-  installPhase = ''
-    runHook preInstall
-
-    install -Dm644 $src/fonts/opentype/nowacki/iwona/*.otf -t $out/share/fonts/opentype
-
-    runHook postInstall
-  '';
+  nativeBuildInputs = [ installFonts ];
 
   meta = {
     description = "Two-element sans-serif typeface, created by Małgorzata Budyta";
