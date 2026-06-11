@@ -1,43 +1,46 @@
 {
   lib,
   fetchurl,
-  stdenv,
+  stdenvNoCC,
+  installFonts,
 }:
 
-let
-  pname = "agave";
-  version = "37";
+stdenvNoCC.mkDerivation (
+  finalAttrs:
+  let
 
-  mkAg =
-    name: hash:
-    fetchurl {
-      url = "https://github.com/agarick/agave/releases/download/v${version}/Agave-${name}.ttf";
-      sha256 = hash;
-      name = "Agave-${name}.ttf";
+    mkAg =
+      name: hash:
+      fetchurl {
+        url = "https://github.com/agarick/agave/releases/download/v${finalAttrs.version}/Agave-${name}.ttf";
+        sha256 = hash;
+        name = "Agave-${name}.ttf";
+      };
+    # There are slashed variants, but with same name so only bundle the default versions for now:
+    fonts = [
+      (mkAg "Regular" "sha256-vX1VhEgqy9rQ7hPmAgBGxKyIs2QSAYqZC/mL/2BIOrA=")
+      (mkAg "Regular-slashed" "")
+      (mkAg "Bold" "sha256-Ax/l/RKyc03law0ThiLac/7HHV4+YxibKzcZnjZs6VI=")
+      (mkAg "Bold-slashed" "")
+    ];
+
+  in
+  {
+    pname = "agave";
+    version = "37";
+
+    srcs = fonts;
+    sourceRoot = ".";
+
+    dontUnpack = true;
+    nativeBuildInputs = [ installFonts ];
+
+    meta = {
+      description = "TrueType monospaced typeface designed for X environments";
+      homepage = "https://b.agaric.net/page/agave";
+      license = lib.licenses.mit;
+      maintainers = [ ];
+      platforms = lib.platforms.all;
     };
-  # There are slashed variants, but with same name so only bundle the default versions for now:
-  fonts = [
-    (mkAg "Regular" "sha256-vX1VhEgqy9rQ7hPmAgBGxKyIs2QSAYqZC/mL/2BIOrA=")
-    (mkAg "Bold" "sha256-Ax/l/RKyc03law0ThiLac/7HHV4+YxibKzcZnjZs6VI=")
-  ];
-
-in
-stdenv.mkDerivation {
-  inherit pname version;
-  srcs = fonts;
-  sourceRoot = ".";
-
-  dontUnpack = true;
-
-  installPhase = ''
-    install -D $srcs -t $out/share/fonts/truetype/
-  '';
-
-  meta = {
-    description = "TrueType monospaced typeface designed for X environments";
-    homepage = "https://b.agaric.net/page/agave";
-    license = lib.licenses.mit;
-    maintainers = [ ];
-    platforms = lib.platforms.all;
-  };
-}
+  }
+)
