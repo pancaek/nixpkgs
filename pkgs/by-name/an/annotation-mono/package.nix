@@ -2,10 +2,16 @@
   lib,
   stdenvNoCC,
   fetchzip,
+  installFonts,
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "annotation-mono";
   version = "0.4";
+
+  outputs = [
+    "out"
+    "webfont"
+  ];
 
   src = fetchzip {
     url = "https://github.com/qwerasd205/AnnotationMono/releases/download/v${finalAttrs.version}/AnnotationMono_v${finalAttrs.version}.zip";
@@ -13,14 +19,15 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     stripRoot = false;
   };
 
-  installPhase = ''
-    runHook preInstall
+  nativeBuildInputs = [ installFonts ];
 
-    install -D -m444 -t $out/share/fonts/truetype $src/dist/ttf/*.ttf
-    install -D -m444 -t $out/share/fonts/truetype $src/dist/variable/AnnotationMono-VF.ttf
-    install -D -m444 -t $out/share/fonts/opentype $src/dist/otf/*.otf
-
-    runHook postInstall
+  preInstall = ''
+      rm -r __MACOSX
+      find dist -type f ! -name 'AnnotationMono*' -exec sh -c '
+      for file; do
+        mv "$file" "$(dirname "$file")/AnnotationMono-$(basename "$file")"
+      done
+    ' sh {} +
   '';
 
   meta = {
